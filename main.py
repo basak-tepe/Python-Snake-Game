@@ -1,5 +1,7 @@
 
 import turtle
+import time #to add delays
+delay = 0.2
 
 #main window
 
@@ -42,11 +44,11 @@ def move():
 
     if shead.direction == "left":
         x = shead.xcor()
-        shead.setx(x + 25)
+        shead.setx(x - 25)
 
     if shead.direction == "right":
         x = shead.xcor()
-        shead.setx(x - 25)
+        shead.setx(x + 25)
 
 #keyboard bindings
 wn.listen()
@@ -59,6 +61,10 @@ wn.onkeypress(move_right, "d")
 #main game
 while True:
     wn.update()
+
+    move()
+
+    time.sleep(delay)
 
 
 
