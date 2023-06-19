@@ -7,7 +7,7 @@ delay = 0.2
 
 
 #awaiting updates
-#snake size 
+#snake size
 snake_length = 1
 
 #main window
@@ -26,21 +26,26 @@ shead.penup()  #Snake moves without leaving ink behind
 shead.goto(0, 0)
 shead.direction = "stop"
 
+sbody = []   #snake's body which will grow
+
 #fns
 def move_up():
-    shead.direction = "up"
+    if shead.direction != "down":
+        shead.direction = "up"
 
 def move_down():
-    shead.direction = "down"
+    if shead.direction != "up":
+        shead.direction = "down"
 
 def move_left():
-    shead.direction = "left"
+    if shead.direction != "right":
+        shead.direction = "left"
 
 def move_right():
-    shead.direction = "right"
+    if shead.direction != "left":
+        shead.direction = "right"
 
 def move():
-    consume_food()
     if shead.direction == "up":
         y = shead.ycor()
         shead.sety(y + 20)
@@ -64,51 +69,44 @@ wn.onkeypress(move_down, "s")
 wn.onkeypress(move_left, "a")
 wn.onkeypress(move_right, "d")
 
-global food
-global food_exists #food presence
-food_exists = False
-
-#generate food on the screen
-#random coordinates each time
-def generate_food():
-    global food_exists
-    global food
-    if food_exists == False:
-        x = random.randint(-400, 400)
-        y = random.randint(-400, 400)
-        food = turtle.Turtle()
-        food.shape('circle')
-        food.color('red')
-        food.speed(0)
-        food.penup()
-        food.goto(x, y)
-        food_exists = True
-        return food
-    else:
-        return None
-
-def consume_food():
-    global food_exists
-    global food
-    global snake_length
-    if shead.distance(food) < 20:
-        #we should have used clear
-        food.hideturtle()
-        snake_length += 1
-        food_exists = False
-        return True
-    else:
-        return False
+#create the food
+food = turtle.Turtle()
+food.shape('circle')
+food.color('red')
+food.speed(0)
+food.penup()
+food.goto(0, 100)
 
 #main game
+
 while True:
     wn.update()
-    generate_food()
+    if shead.distance(food) < 20:  #colission with the food
+        x = random.randint(-395, 395)
+        y = random.randint(-395, 395)
+        food.goto(x, y)
+
+        # adding to body
+        add_body = turtle.Turtle()
+        add_body.speed(0)
+        add_body.shape("square")
+        add_body.color("yellow")
+        add_body.penup()
+        sbody.append(add_body)
+
+        delay -= 0.002
+
+    for i in range(len(sbody)-1, 0, -1):
+        x = sbody[i - 1].xcor()
+        y = sbody[i - 1].ycor()
+        sbody[i].goto(x, y)
+
+    if len(sbody) > 0:
+        x = shead.xcor()
+        y = shead.ycor()
+        sbody[0].goto(x, y)
+
     move()
     time.sleep(delay)
-
-
-
-
 
 wn.mainloop()
