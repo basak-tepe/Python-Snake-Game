@@ -13,9 +13,27 @@ snake_length = 1
 #main window
 wn = turtle.Screen()
 wn.title("Snake Game")
-wn.bgcolor("gray")
+wn.bgcolor("salmon")
 wn.setup(width=800, height=800)
 wn.tracer(0)  #No snake is seen at the begining
+
+#score label
+score = 0
+high_score = 0
+
+#score display
+def display_score():
+    pen = turtle.Turtle()
+    pen.speed(0)
+    pen.shape("square")
+    pen.color("white")
+    pen.penup()
+    pen.hideturtle()  #to hide the turtle
+    pen.goto(0, 360)
+    pen.write("Score: " + str(score) +" High Score: " + str(high_score), align="center", font=("Helvetica", 24, "bold"))
+    return pen
+    
+
 
 #the head
 shead = turtle.Turtle()
@@ -79,18 +97,25 @@ food.goto(0, 100)
 
 #main game
 
+scoreboard = display_score()
+
 while True:
     wn.update()
-    if shead.distance(food) < 20:  #colission with the food
+    if shead.distance(food) < 20:  #eat the food
         x = random.randint(-395, 395)
         y = random.randint(-395, 395)
         food.goto(x, y)
+        score += 10
+        if score > high_score:
+            high_score = score
+        scoreboard.clear()
+        scoreboard = display_score()
 
         # adding to body
         add_body = turtle.Turtle()
         add_body.speed(0)
         add_body.shape("square")
-        add_body.color("yellow")
+        add_body.color("black")
         add_body.penup()
         sbody.append(add_body)
 
