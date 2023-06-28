@@ -13,9 +13,23 @@ snake_length = 1
 #main window
 wn = turtle.Screen()
 wn.title("Snake Game")
-wn.bgcolor("salmon")
+wn.bgcolor("grey")
 wn.setup(width=800, height=800)
 wn.tracer(0)  #No snake is seen at the begining
+
+#game borders
+border_pen = turtle.Turtle()
+border_pen.speed(0)
+border_pen.color("black")
+border_pen.penup()
+border_pen.setposition(-400, -400)
+border_pen.pendown()
+border_pen.pensize(20)
+for side in range(4):
+    border_pen.fd(800)
+    border_pen.lt(90)
+border_pen.hideturtle()
+
 
 #score label
 score = 0
@@ -29,16 +43,26 @@ def display_score():
     pen.color("white")
     pen.penup()
     pen.hideturtle()  #to hide the turtle
-    pen.goto(0, 360)
+    pen.goto(0, 300)
     pen.write("Score: " + str(score) +" High Score: " + str(high_score), align="center", font=("Helvetica", 24, "bold"))
     return pen
     
+def display_game_over():
+    pen = turtle.Turtle()
+    pen.speed(0)
+    pen.shape("square")
+    pen.color("white")
+    pen.penup()
+    pen.hideturtle()  #to hide the turtle
+    pen.goto(0, 0)
+    pen.write("Game Over\n Start Again", align="center", font=("Helvetica", 24, "bold"))
+    return pen
 
 
 #the head
 shead = turtle.Turtle()
 shead.shape('square')
-shead.color('black')
+shead.color('green')
 shead.speed(0)
 shead.penup()  #Snake moves without leaving ink behind
 shead.goto(0, 0)
@@ -100,7 +124,33 @@ food.goto(0, 100)
 scoreboard = display_score()
 
 while True:
+    
     wn.update()
+    #if you touch the sides game over
+    if shead.xcor() > 390 or shead.xcor() < -390 or shead.ycor() > 390 or shead.ycor() < -390:
+        time.sleep(1)
+        shead.goto(0, 0)
+        shead.direction = "stop"
+
+        #hide the body
+        for body in sbody:
+            body.goto(1000, 1000)
+
+        lost = display_game_over()
+        wn.update()
+        time.sleep(1)
+        #clear the body list
+        sbody.clear()
+
+        #reset the score
+        score = 0
+        scoreboard.clear()
+        scoreboard = display_score()
+        delay = 0.2
+        lost.clear()
+        wn.update()
+
+
     if shead.distance(food) < 20:  #eat the food
         x = random.randint(-395, 395)
         y = random.randint(-395, 395)
@@ -115,7 +165,7 @@ while True:
         add_body = turtle.Turtle()
         add_body.speed(0)
         add_body.shape("square")
-        add_body.color("black")
+        add_body.color("green")
         add_body.penup()
         sbody.append(add_body)
 
@@ -133,5 +183,6 @@ while True:
 
     move()
     time.sleep(delay)
+
 
 wn.mainloop()
